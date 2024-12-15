@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from pydantic import BaseModel
-from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import select
+import jwt
 import os
 
 from db import database, metadata, engine
@@ -37,7 +37,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
             raise HTTPException(status_code=401, detail="User not found")
         
         return user
-    except JWTError:
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
     
 # Utility functions
