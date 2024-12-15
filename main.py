@@ -69,3 +69,13 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 @app.post("/register")
 async def register_user(email: str, password: str, first_name: str, last_name: str):
     hashed_password = pwd_context.hash(password)
+    query = users.insert().values(email = email, hashed_password = hashed_password, first_name = first_name, last_name = last_name)
+    try:
+        await database.execute(query)
+        return {"message": "User registered successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="User already exists")
+
+@app.get("/protected")
+async def protected_route(user = Depends(get_current_user)):
+    return { "message": f"Welcome {user['first_name']} {user['last_name']}"}
