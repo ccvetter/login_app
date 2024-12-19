@@ -11,7 +11,7 @@ const getAccessToken = () => {
 };
 
 const isAdmin = () => {
-  return sessionStorage.getItem("is_staff") == "true" ? true : false;
+  return sessionStorage.getItem("is_staff") === "true" ? true : false;
 };
 
 const isAuthenticated = () => {
