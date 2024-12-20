@@ -2,15 +2,25 @@ import React, { useState } from "react";
 import { registerNewUser } from "./RegisterActions";
 
 export default function Register() {
-  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [birthdate, setBirthdate] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [retypedPassword, setRetypedPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleUsername = (e: { target: { value: React.SetStateAction<string>; }; }) => {
-    setUsername(e.target.value);
+  const handleFirstName = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setFirstName(e.target.value);
   };
+
+  const handleLastName = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setLastName(e.target.value);
+  }
+
+  const handleBirthdate = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+    setBirthdate(e.target.value);
+  }
 
   const handleEmail = (e: { target: { value: React.SetStateAction<string>; }; }) => {
     setEmail(e.target.value);
@@ -29,15 +39,27 @@ export default function Register() {
       setError("Passwords do not match");
     } else if (email === "" || password === "") {
       setError("Email/password can not be blank");
-    } else if (username === "") {
-      setError("Username can not be blank");
+    } else if (firstName === "") {
+      setError("First name can not be blank");
     } else {
       const userData = {
-        username: username,
+        username: "",
+        first_name: firstName,
+        last_name: lastName || "",
         email: email,
         password: password,
+        birthdate: birthdate || "",
       };
-      registerNewUser(userData);
+      registerNewUser(userData).then((response) => {
+        console.log(response)
+        if (response.status === 201) {
+            window.location.href = "/login"
+        } else {
+            if (response.message) {
+            setError(response.message);
+            }
+        }
+      });
     }
   };
 
@@ -58,17 +80,65 @@ export default function Register() {
             <form className="space-y-4 md:space-y-6" action="#">
               <div>
                 <label
-                  htmlFor="username"
+                  htmlFor="firstName"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Username
+                  First Name
                 </label>
                 <input
                   type="text"
-                  name="username"
-                  id="username"
+                  name="firstName"
+                  id="firstName"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus::border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  onChange={handleUsername}
+                  onChange={handleFirstName}
+                  required
+                />
+                {error.length > 0 && (
+                  <div
+                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    role="alert"
+                  >
+                    <span className="font-medium">{error}</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  id="lastName"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus::border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handleLastName}
+                  required
+                />
+                {error.length > 0 && (
+                  <div
+                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    role="alert"
+                  >
+                    <span className="font-medium">{error}</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label
+                  htmlFor="birthdate"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Birthdate
+                </label>
+                <input
+                  type="date"
+                  name="birthdate"
+                  id="birthdate"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus::border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handleBirthdate}
                   required
                 />
                 {error.length > 0 && (

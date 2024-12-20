@@ -31,7 +31,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
     first_name: str
-    last_name: str
+    last_name: Optional[str] = None
     birthdate: Optional[str] = None
 
 class UserResponse(SharedFieldsSchema):

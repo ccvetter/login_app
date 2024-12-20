@@ -38,7 +38,7 @@ async def health_check():
     """
     return {"status": "healthy"}
 
-@router.post("/", dependencies=[Depends(jwt_bearer)], response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """
     Create a new user in the database
@@ -47,7 +47,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     if get_user_by_email(user.email, db):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
 
-    birthdate = datetime.strptime(user.birthdate, "%m/%d/%Y") if user.birthdate else None
+    birthdate = datetime.strptime(user.birthdate, "%Y-%m-%d").strftime("%m/%d/%Y") if user.birthdate else None
 
     # Create new user
     db_user = UserModel(
