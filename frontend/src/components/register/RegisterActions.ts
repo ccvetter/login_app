@@ -4,11 +4,6 @@ export const registerNewUser = (userData: any) => {
     return axios
         .post("users", userData)
         .then(response => {
-            let token = JSON.parse(response.data)["token"];
-            if (response.data) {
-                localStorage.setItem("access_token", token)
-            }
-
             return response;
         })
         .catch(error => {

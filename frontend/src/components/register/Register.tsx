@@ -40,7 +40,7 @@ export default function Register() {
     } else if (email === "" || password === "") {
       setError("Email/password can not be blank");
     } else if (firstName === "") {
-      setError("First name can not be blank");
+      setError("First name can't be blank");
     } else {
       const userData = {
         username: "",
@@ -51,12 +51,11 @@ export default function Register() {
         birthdate: birthdate || "",
       };
       registerNewUser(userData).then((response) => {
-        console.log(response)
         if (response.status === 201) {
             window.location.href = "/login"
         } else {
-            if (response.message) {
-            setError(response.message);
+            if (response.detail) {
+            setError(response.detail);
             }
         }
       });
@@ -93,7 +92,7 @@ export default function Register() {
                   onChange={handleFirstName}
                   required
                 />
-                {error.length > 0 && (
+                {error === "First name can't be blank" && (
                   <div
                     className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
                     role="alert"
@@ -117,14 +116,6 @@ export default function Register() {
                   onChange={handleLastName}
                   required
                 />
-                {error.length > 0 && (
-                  <div
-                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                    role="alert"
-                  >
-                    <span className="font-medium">{error}</span>
-                  </div>
-                )}
               </div>
               <div>
                 <label
@@ -141,14 +132,6 @@ export default function Register() {
                   onChange={handleBirthdate}
                   required
                 />
-                {error.length > 0 && (
-                  <div
-                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                    role="alert"
-                  >
-                    <span className="font-medium">{error}</span>
-                  </div>
-                )}
               </div>
               <div>
                 <label
@@ -166,14 +149,15 @@ export default function Register() {
                   onChange={handleEmail}
                   required
                 />
-                {error.length > 0 && (
-                  <div
-                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                    role="alert"
-                  >
-                    <span className="font-medium">{error}</span>
-                  </div>
-                )}
+                {error === "Email/password can not be blank" ||
+                  (error === "Email already registered" && (
+                    <div
+                      className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                      role="alert"
+                    >
+                      <span className="font-medium">{error}</span>
+                    </div>
+                  ))}
               </div>
               <div>
                 <label
@@ -191,6 +175,15 @@ export default function Register() {
                   onChange={handlePassword}
                   required
                 />
+                {error === "Email/password can not be blank" ||
+                  (error === "Passwords do not match" && (
+                    <div
+                      className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                      role="alert"
+                    >
+                      <span className="font-medium">{error}</span>
+                    </div>
+                  ))}
               </div>
               <div>
                 <label
