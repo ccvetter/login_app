@@ -6,7 +6,7 @@ export default function Users() {
         GetUsers().then((response) => {
             console.log(response);
         })
-    })
+    }, [])
 
      return (
         <section className="bg-gray-50 dark:bg-gray-900"></section>

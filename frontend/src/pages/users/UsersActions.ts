@@ -7,14 +7,7 @@ export async function GetUsers() {
             .get("/")
             .then(response => {
                 console.log(response.data)
-                // if (response.data) {
-                //     let data = response.data
-                //     let access_token = data["access_token"]
-                //     let refresh_token = data["refresh_token"]
-                //     localStorage.setItem("access_token", access_token)
-                //     localStorage.setItem("refresh_token", refresh_token)
-                // }
-
+                
                 return response;
             })
             .catch(error => {

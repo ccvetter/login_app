@@ -7,27 +7,35 @@ import Users from "./pages/users/Users";
 // import Items from "./components/items/Items";
 import ProtectedRoute from "./ProtectedRoute";
 import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
 
 const getAccessToken = () => {
   return localStorage.getItem("access_token");
 };
 
-const getUserId = () => {
+const getUser = async () => {
     const access_token = getAccessToken();
     if (access_token) {
-        const token = jwtDecode(access_token);
-        console.log(token)
-        return token['sub'];
-    }
+      const token = jwtDecode(access_token);
+      const user_id = token["sub"];
+      axiosInstance.get(`/users/${user_id}`).then((response) => {
+        return response.data;
+      })
+    } 
+    return null;
 }
 
-const isAdmin = () => {
-    const user_id = getUserId();
-    axiosInstance.get(`/${user_id}`).then((response) => {
-        console.log(response)
-        return response.data["is_admin"]
-    })
+const isAdmin = async () => {
+    const user = await getUser();
+    console.log(user)
+    if (user) {
+        axiosInstance.get(`/users/${user.id}`).then((response) => {
+            return response.data["is_admin"]
+        })
+    }
+    return false
 }
+
 
 // const isAdmin = () => {
 //   return localStorage.getItem("is_admin") === "true" ? true : false;
