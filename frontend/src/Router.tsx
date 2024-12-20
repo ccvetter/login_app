@@ -1,18 +1,37 @@
-import React from "react";
 import { createBrowserRouter } from "react-router-dom";
-import Register from "./components/register/Register";
-import Login from "./components/login/Login";
-import Dashboard from "./components/dashboard/Dashboard";
+import axiosInstance from "./axios_instance";
+import Register from "./pages/register/Register";
+import Login from "./pages/login/Login";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Users from "./pages/users/Users";
 // import Items from "./components/items/Items";
 import ProtectedRoute from "./ProtectedRoute";
+import { jwtDecode } from "jwt-decode";
 
 const getAccessToken = () => {
   return localStorage.getItem("access_token");
 };
 
+const getUserId = () => {
+    const access_token = getAccessToken();
+    if (access_token) {
+        const token = jwtDecode(access_token);
+        console.log(token)
+        return token['sub'];
+    }
+}
+
 const isAdmin = () => {
-  return localStorage.getItem("is_staff") === "true" ? true : false;
-};
+    const user_id = getUserId();
+    axiosInstance.get(`/${user_id}`).then((response) => {
+        console.log(response)
+        return response.data["is_admin"]
+    })
+}
+
+// const isAdmin = () => {
+//   return localStorage.getItem("is_admin") === "true" ? true : false;
+// };
 
 const isAuthenticated = () => {
   return !!getAccessToken();
@@ -34,7 +53,7 @@ const router = createBrowserRouter(
       children: [
         {
           path: "/",
-          element: <><Dashboard /></>,
+          element: <Dashboard />,
         },
       ],
     },
@@ -42,8 +61,8 @@ const router = createBrowserRouter(
       element: <ProtectedRoute isAuthenticated={isAdmin()} />,
       children: [
         {
-          path: "/items",
-          element: <>Items</>,
+          path: "/users",
+          element: <Users />,
         },
       ],
     },

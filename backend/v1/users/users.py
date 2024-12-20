@@ -38,7 +38,7 @@ async def health_check():
     """
     return {"status": "healthy"}
 
-@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", dependencies=[Depends(jwt_bearer)], response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """
     Create a new user in the database
@@ -56,7 +56,9 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
         password=hash_password(user.password),
         first_name=user.first_name,
         last_name=user.last_name,
-        birthdate=birthdate
+        birthdate=birthdate,
+        is_staff=user.is_staff,
+        is_admin=user.is_admin
     )
     
     db.add(db_user)
@@ -78,7 +80,7 @@ async def list_users(
     users = db.exec(users_query).all()
     return users
 
-@router.get("/{user_id}", dependencies=[Depends(JWTBearer())], response_model=UserResponse)
+@router.get("/{user_id}", dependencies=[Depends(jwt_bearer)], response_model=UserResponse)
 async def get_user(
     user_id: uuid.UUID = Path(...), 
     db: Session = Depends(get_db)
@@ -86,6 +88,7 @@ async def get_user(
     """
     Retrieve a specific user by ID
     """
+    print(user_id)
     user = get_user_by_id(user_id, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
