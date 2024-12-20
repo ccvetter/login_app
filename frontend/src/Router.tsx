@@ -7,11 +7,11 @@ import Dashboard from "./components/dashboard/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 
 const getAccessToken = () => {
-  return sessionStorage.getItem("access_token");
+  return localStorage.getItem("access_token");
 };
 
 const isAdmin = () => {
-  return sessionStorage.getItem("is_staff") === "true" ? true : false;
+  return localStorage.getItem("is_staff") === "true" ? true : false;
 };
 
 const isAuthenticated = () => {
@@ -21,13 +21,9 @@ const isAuthenticated = () => {
 const router = createBrowserRouter(
   [
     {
-      path: "/",
-      element: <Dashboard />,
-      index: true,
-    },
-    {
       path: "/login",
       element: <Login />,
+      index: true
     },
     {
       path: "/register",
@@ -37,8 +33,8 @@ const router = createBrowserRouter(
       element: <ProtectedRoute isAuthenticated={isAuthenticated()} />,
       children: [
         {
-          path: "/dashboard",
-          element: <>Dashboard</>,
+          path: "/",
+          element: <><Dashboard /></>,
         },
       ],
     },

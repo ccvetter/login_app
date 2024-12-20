@@ -33,7 +33,7 @@ export default function Login() {
     };
 
     LoginUser(userData).then((response) => {
-      if (response.status === 200) {
+      if (response.status === 202) {
         window.location.href = "/";
       } else {
         if (response.message) {
