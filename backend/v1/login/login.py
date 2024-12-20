@@ -11,9 +11,9 @@ router = APIRouter(
 
 # Endpoints
 @router.post("/login", response_model=TokenSchema, status_code=202)
-async def create_user(request: UserLogin, db: Session = Depends(get_db)):
+async def login_user(request: UserLogin, db: Session = Depends(get_db)):
     """
-    Create a new user in the database
+    Login a user
     """
     # Check if email already exists
     user_query = select(UserModel).where(UserModel.email == request.email)
