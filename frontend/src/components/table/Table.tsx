@@ -37,9 +37,9 @@ const Table = <T,>({ data, columns }: Props<T>) => {
     );
 
     return (
-        <div className="overflow-x-auto">
-            <table className="table w-full">
-                <thead className="bg-slate-400 text-black">
+        <div className="relative overflow-x-auto">
+            <table className="w-full text-sm text-center rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>{headers}</tr>
                 </thead>
                 <tbody>{rows}</tbody>
