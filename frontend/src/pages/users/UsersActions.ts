@@ -1,10 +1,11 @@
 import axios from "axios";
+import axiosInstance from "../../axios_instance";
 
 export async function GetUsers() {
     let access_token = localStorage.getItem("access_token")
     if (access_token) {
-        return axios
-            .get("/")
+        return axiosInstance
+            .get("/users")
             .then(response => {
                 console.log(response.data)
                 

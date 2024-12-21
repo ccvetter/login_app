@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const registerNewUser = (userData: any) => {
+export const RegisterNewUser = (userData: any) => {
     return axios
         .post("users", userData)
         .then(response => {

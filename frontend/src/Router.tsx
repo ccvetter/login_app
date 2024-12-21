@@ -1,49 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import axiosInstance from "./axios_instance";
 import Register from "./pages/register/Register";
 import Login from "./pages/login/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Users from "./pages/users/Users";
 // import Items from "./components/items/Items";
 import ProtectedRoute from "./ProtectedRoute";
-import { jwtDecode } from "jwt-decode";
-import { useState } from "react";
-
-const getAccessToken = () => {
-  return localStorage.getItem("access_token");
-};
-
-const getUser = async () => {
-    const access_token = getAccessToken();
-    if (access_token) {
-      const token = jwtDecode(access_token);
-      const user_id = token["sub"];
-      axiosInstance.get(`/users/${user_id}`).then((response) => {
-        return response.data;
-      })
-    } 
-    return null;
-}
-
-const isAdmin = async () => {
-    const user = await getUser();
-    console.log(user)
-    if (user) {
-        axiosInstance.get(`/users/${user.id}`).then((response) => {
-            return response.data["is_admin"]
-        })
-    }
-    return false
-}
-
-
-// const isAdmin = () => {
-//   return localStorage.getItem("is_admin") === "true" ? true : false;
-// };
-
-const isAuthenticated = () => {
-  return !!getAccessToken();
-};
 
 const router = createBrowserRouter(
   [
@@ -57,7 +18,7 @@ const router = createBrowserRouter(
       element: <Register />,
     },
     {
-      element: <ProtectedRoute isAuthenticated={isAuthenticated()} />,
+      element: <ProtectedRoute authLevel={"user"} />,
       children: [
         {
           path: "/",
@@ -66,13 +27,22 @@ const router = createBrowserRouter(
       ],
     },
     {
-      element: <ProtectedRoute isAuthenticated={isAdmin()} />,
+      element: <ProtectedRoute authLevel={"admin"} />,
       children: [
         {
           path: "/users",
           element: <Users />,
         },
       ],
+    },
+    {
+        element: <ProtectedRoute authLevel={"staff"} />,
+        children: [
+            {
+                path: "/users",
+                element: <Users />,
+            }
+        ]
     },
     {
       path: "*",

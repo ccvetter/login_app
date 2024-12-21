@@ -38,7 +38,7 @@ async def health_check():
     """
     return {"status": "healthy"}
 
-@router.post("/", dependencies=[Depends(jwt_bearer)], response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, db: Session = Depends(get_db)):
     """
     Create a new user in the database

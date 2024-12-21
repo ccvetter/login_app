@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { registerNewUser } from "./RegisterActions";
+import { RegisterNewUser } from "./RegisterActions";
 
 export default function Register() {
   const [firstName, setFirstName] = useState("");
@@ -50,7 +50,7 @@ export default function Register() {
         password: password,
         birthdate: birthdate || "",
       };
-      registerNewUser(userData).then((response) => {
+      RegisterNewUser(userData).then((response) => {
         if (response.status === 201) {
             window.location.href = "/login"
         } else {
