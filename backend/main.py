@@ -12,7 +12,7 @@ from v1.login.login import router as login_router
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://127.0.0.1:80",
+    "http://192.168.0.201:3000",
 ]
         
 app = FastAPI(lifespan=init_db())
