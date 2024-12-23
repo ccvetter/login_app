@@ -1,5 +1,4 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 
 export async function LoginUser(userData: any) {
     if (userData) {

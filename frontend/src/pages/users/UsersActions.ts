@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosInstance from "../../axios_instance";
 
 export async function GetUsers() {
