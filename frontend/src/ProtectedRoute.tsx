@@ -68,7 +68,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
       return <Outlet />;
     } else {
       console.log('Not authorized')
-      return <Navigate to="/" replace />;
+      return <Navigate to="/login" replace />;
     }
   } else {
     return <Navigate to="/login" replace />;
