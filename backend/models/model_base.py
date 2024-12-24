@@ -18,7 +18,7 @@ class SharedFieldsMixin:
         """
         Automatically add a UUID id column to models using this mixin
         """
-        return Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+        return Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4(), index=True)
 
     @declared_attr
     def created_at(cls):
