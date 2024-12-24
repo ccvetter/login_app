@@ -31,7 +31,7 @@ def get_user_by_email(email: str, db: Session) -> Optional[UserModel]:
     return db.exec(email_query).first()
 
 # Endpoints
-@router.get("/health", dependencies=[Depends(jwt_bearer)], status_code=status.HTTP_200_OK)
+@router.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
     """
     Simple health check endpoint
