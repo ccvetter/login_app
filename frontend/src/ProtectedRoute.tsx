@@ -58,7 +58,9 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
   if (isLoading) {
     return null;
   }
-
+  console.log(isActive)
+  console.log(isAuthenticated)
+  console.log(isAdmin)
   if (isActive) {
     if (isAuthenticated && isAdmin) {
       return <Outlet />;
