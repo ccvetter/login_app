@@ -88,7 +88,6 @@ async def get_user(
     """
     Retrieve a specific user by ID
     """
-    print(user_id)
     user = get_user_by_id(user_id, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")

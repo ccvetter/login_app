@@ -20,8 +20,8 @@ class UserModel(SharedFieldsModel):
     access_token = Column(String(450), nullable=True)
     refresh_token = Column(String(450), nullable=True)
     active = Column(Boolean, nullable=False, default=True)
-    is_staff = Column(Boolean, nullable=False)
-    is_admin = Column(Boolean, nullable=False)
+    is_staff = Column(Boolean, nullable=False, default=False)
+    is_admin = Column(Boolean, nullable=False, default=False)
     token_created_at = Column(DateTime(timezone=True), nullable=True)
 
 # Pydantic Models for Request/Response Validation
@@ -35,8 +35,8 @@ class UserCreate(BaseModel):
     first_name: str
     last_name: Optional[str] = None
     birthdate: Optional[str] = None
-    is_staff: Optional[bool] = False
-    is_admin: Optional[bool] = False
+    is_staff: Optional[bool] = None
+    is_admin: Optional[bool] = None
 
 class UserResponse(SharedFieldsSchema):
     """
