@@ -64,7 +64,6 @@ export default function Users() {
 
     useEffect(() => {
         GetUsers().then((response) => {
-            console.log(response);
             if (response.data) {
                 setData(response.data);
             }

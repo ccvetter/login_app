@@ -36,7 +36,6 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
         const response = await axiosInstance.get(`/users/${user_id}`);
 	
         if (response.data) {
-          console.log(response.data)
           setIsAdmin(response.data.is_admin);
           setIsStaff(response.data.is_staff);
           setIsActive(response.data.active);

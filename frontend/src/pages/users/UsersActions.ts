@@ -6,8 +6,6 @@ export async function GetUsers() {
         return axiosInstance
             .get("/users")
             .then(response => {
-                console.log(response.data)
-                
                 return response;
             })
             .catch(error => {
