@@ -34,6 +34,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
         const token = jwtDecode(JWT);
         const user_id = token["sub"];
         const response = await axiosInstance.get(`/users/${user_id}`);
+	
         if (response.data) {
           console.log(response.data)
           setIsAdmin(response.data.is_admin);
@@ -41,7 +42,12 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
           setIsActive(response.data.active);
         }
       } catch (error) {
-        console.error(error);
+	if (location.pathname === "/") {
+		localStorage.clear();
+		return <Navigate to="/login" replace />;
+	} else {
+		return <Navigate to="/" replace />;
+	}
       } finally {
         setIsLoading(false);
       }
@@ -65,12 +71,11 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
       return <Outlet />;
     } else if (isAuthenticated && authLevel === "staff" && isStaff && !isAdmin) {
       return <Outlet />;
-    } else if (isAuthenticated && authLevel === "user" && !isStaff && !isAdmin) {
+    } else if (isAuthenticated && authLevel === "user") {
       return <Outlet />;
     } else if (isAuthenticated) {
       return <Navigate to="/" replace />;
     } else {
-      console.log('Not authorized')
       return <Navigate to="/login" replace />;
     }
   } else {
