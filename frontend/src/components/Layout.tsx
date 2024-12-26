@@ -1,6 +1,6 @@
-import { Outlet } from "react-router-dom";
+import { PropsWithChildren } from "react";
 
-const Layout = (props:any) => {
+const Layout = ({children}: PropsWithChildren) => {
     const logout = () => {
         localStorage.clear();
         window.location.href = "/login"
@@ -94,7 +94,7 @@ const Layout = (props:any) => {
             </div>
         </aside>
 
-        <Outlet />
+        {children}
         </div>
     );
 }

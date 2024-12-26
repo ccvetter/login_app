@@ -3,12 +3,15 @@ import { Routes, Route } from 'react-router-dom';
 import Login from "./pages/login/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import Dashboard from "./pages/dashboard/Dashboard";
+import Users from './pages/users/Users';
 
 const Router = () => {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Dashboard />}>
+          <Route path="/users" element={<Users />} />
+        </Route>
         <Route path="/login" element={<Login />} />
       </Routes>
     </div>

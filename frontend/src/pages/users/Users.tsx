@@ -72,8 +72,8 @@ export default function Users() {
     }, [])
 
      return (
-        <Layout>
-          <Table data={data} columns={columns} />
-        </Layout>
-     )
+       <Layout>
+         <Table data={data} columns={columns} />
+       </Layout>
+     );
 }
