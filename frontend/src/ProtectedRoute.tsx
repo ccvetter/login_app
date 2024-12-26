@@ -35,6 +35,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
         const user_id = token["sub"];
         const response = await axiosInstance.get(`/users/${user_id}`);
         if (response.data) {
+          console.log(response.data)
           setIsAdmin(response.data.is_admin);
           setIsStaff(response.data.is_staff);
           setIsActive(response.data.active);
@@ -58,9 +59,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
   if (isLoading) {
     return null;
   }
-  console.log(isActive)
-  console.log(isAuthenticated)
-  console.log(isAdmin)
+
   if (isActive) {
     if (isAuthenticated && isAdmin) {
       return <Outlet />;
@@ -68,6 +67,8 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
       return <Outlet />;
     } else if (isAuthenticated && authLevel === "user" && !isStaff && !isAdmin) {
       return <Outlet />;
+    } else if (isAuthenticated) {
+      return <Navigate to="/" replace />;
     } else {
       console.log('Not authorized')
       return <Navigate to="/login" replace />;
