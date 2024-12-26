@@ -67,7 +67,6 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
     } else if (isAuthenticated && authLevel === "user" && !isStaff && !isAdmin) {
       return <Outlet />;
     } else {
-      console.log('Not authorized')
       return <Navigate to="/login" replace />;
     }
   } else {

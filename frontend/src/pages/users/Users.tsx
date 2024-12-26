@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { GetUsers } from "./UsersActions";
 import { ColumnProps } from "../../types/ColumnProps";
 import Table from "../../components/table/Table";
+import Layout from "../../components/Layout";
 
 type Data = {
     username: string;
@@ -64,7 +65,6 @@ export default function Users() {
 
     useEffect(() => {
         GetUsers().then((response) => {
-            console.log(response);
             if (response.data) {
                 setData(response.data);
             }
@@ -72,6 +72,8 @@ export default function Users() {
     }, [])
 
      return (
-        <Table data={data} columns={columns} />
+        <Layout>
+          <Table data={data} columns={columns} />
+        </Layout>
      )
 }
