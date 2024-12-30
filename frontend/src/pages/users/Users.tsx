@@ -65,7 +65,7 @@ export default function Users() {
 
     useEffect(() => {
         GetUsers().then((response) => {
-            if (response.data) {
+            if (response && response.data) {
                 setData(response.data);
             }
         })

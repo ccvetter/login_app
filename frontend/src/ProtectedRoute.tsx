@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
   authLevel: string;
 }
 
-const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
+const ProtectedRoute = ({ authLevel }: ProtectedRouteProps) => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -41,12 +41,12 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
           setIsActive(response.data.active);
         }
       } catch (error) {
-	if (location.pathname === "/") {
-		localStorage.clear();
-		return <Navigate to="/login" replace />;
-	} else {
-		return <Navigate to="/" replace />;
-	}
+        if (location.pathname === "/") {
+          localStorage.clear();
+          return <Navigate to="/login" replace />;
+        } else {
+          return <Navigate to="/" replace />;
+        }
       } finally {
         setIsLoading(false);
       }
@@ -64,7 +64,7 @@ const ProtectedRoute: FC<ProtectedRouteProps> = ({ authLevel }) => {
   if (isLoading) {
     return null;
   }
-
+  console.log('hey there!')
   if (isActive) {
     if (isAuthenticated && isAdmin) {
       return <Outlet />;
