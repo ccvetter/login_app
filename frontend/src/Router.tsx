@@ -18,7 +18,7 @@ const router = createBrowserRouter(
       element: <Register />,
     },
     {
-      element: <ProtectedRoute authLevel={"user"} />,
+      element: <ProtectedRoute authLevel="user" />,
       children: [
         {
           path: "/",
@@ -27,7 +27,7 @@ const router = createBrowserRouter(
       ]
     },
     {
-      element: <ProtectedRoute authLevel={"admin"} />,
+      element: <ProtectedRoute authLevel="admin" />,
       children: [
         {
           path: "/users",
@@ -36,7 +36,7 @@ const router = createBrowserRouter(
       ],
     },
     {
-        element: <ProtectedRoute authLevel={"staff"} />,
+        element: <ProtectedRoute authLevel="staff" />,
         children: [
             {
                 path: "/users",

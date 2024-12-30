@@ -1,85 +1,123 @@
-import { FC, useLayoutEffect, useState } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import axiosInstance from "./axios_instance";
+import { useEffect, useState, useCallback } from "react";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
+import axiosInstance from "./axios_instance";
 
 interface ProtectedRouteProps {
   authLevel: string;
 }
 
 const ProtectedRoute = ({ authLevel }: ProtectedRouteProps) => {
-  const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isStaff, setIsStaff] = useState<boolean>(false);
-  const [isActive, setIsActive] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [authState, setAuthState] = useState({
+    isAuthenticated: false,
+    isAdmin: false,
+    isStaff: false,
+    isActive: true,
+    isLoading: true,
+  });
 
-  useLayoutEffect(() => {
+  const navigateTo = useCallback((route: string) => {
+    setTimeout(() => navigate(route, { replace: true }), 0);
+  }, [navigate]);
+
+  const handleUnauthenticated = useCallback(() => {
+    setAuthState((prev) => ({
+      ...prev,
+      isAuthenticated: false,
+      isAdmin: false,
+      isStaff: false,
+      isLoading: false,
+    }));
+    localStorage.clear();
+    navigateTo("/login");
+  }, [navigateTo]);
+
+  const handleAuthError = useCallback(
+    (error: unknown) => {
+      if (!toast.isActive("authError")) {
+        toast.error("There was an error", { toastId: "authError" });
+      }
+      console.error(error);
+      localStorage.clear();
+      setAuthState((prev) => ({ ...prev, isLoading: false }));
+      navigateTo("/");
+    },
+    [navigateTo]
+  );
+
+  useEffect(() => {
     const authCheck = async () => {
-      setIsLoading(true);
+      setAuthState((prev) => ({ ...prev, isLoading: true }));
       const JWT = localStorage.getItem("access_token");
 
       if (!JWT) {
-        setIsAuthenticated(false);
-        setIsAdmin(false);
-        setIsStaff(false);
-        window.location.href = "/login"
+        handleUnauthenticated();
         return;
-      } else {
-        setIsAuthenticated(true);
       }
 
       try {
-        const token = jwtDecode(JWT);
-        const user_id = token["sub"];
-        const response = await axiosInstance.get(`/users/${user_id}`);
-	
+        const token: { sub: string } = jwtDecode(JWT);
+        const userId = token.sub;
+        const response = await axiosInstance.get(`/users/${userId}`);
+
         if (response.data) {
-          setIsAdmin(response.data.is_admin);
-          setIsStaff(response.data.is_staff);
-          setIsActive(response.data.active);
+          setAuthState({
+            isAuthenticated: true,
+            isAdmin: response.data.is_admin,
+            isStaff: response.data.is_staff,
+            isActive: response.data.active,
+            isLoading: false,
+          });
         }
       } catch (error) {
-        if (location.pathname === "/") {
-          localStorage.clear();
-          return <Navigate to="/login" replace />;
-        } else {
-          return <Navigate to="/" replace />;
-        }
-      } finally {
-        setIsLoading(false);
+        handleAuthError(error);
       }
     };
 
     authCheck();
+  }, [pathname, handleUnauthenticated, handleAuthError]);
 
-    return () => {
-      // cancel/clean up any pending/in-flight async auth checks
-      const controller = new AbortController()
-      controller.abort()
-    };
-  }, [location.pathname]);
-
-  if (isLoading) {
+  if (authState.isLoading) {
     return null;
   }
-  console.log('hey there!')
-  if (isActive) {
-    if (isAuthenticated && isAdmin) {
-      return <Outlet />;
-    } else if (isAuthenticated && authLevel === "staff" && isStaff && !isAdmin) {
-      return <Outlet />;
-    } else if (isAuthenticated && authLevel === "user") {
-      return <Outlet />;
-    } else if (isAuthenticated) {
-      return <Navigate to="/" replace />;
-    } else {
-      return <Navigate to="/login" replace />;
+
+  if (!authState.isActive) {
+    if (!toast.isActive("notAuthenticated")) {
+      setTimeout(
+        () =>
+          toast.error("Account is inactive", { toastId: "notAuthenticated" }),
+        0
+      );
     }
-  } else {
-    return <Navigate to="/login" replace />;
+    navigateTo("/login")
+    return null;
   }
+
+  if (authState.isAuthenticated) {
+    if (authState.isAdmin) {
+      return <Outlet />;
+    }
+    if (authLevel === "staff" && (authState.isStaff || authState.isAdmin)) {
+      return <Outlet />;
+    }
+    if (authLevel === "user") {
+      return <Outlet />;
+    }
+    if (!toast.isActive("notAuthorized")) {
+      setTimeout(
+        () => toast.error("Not authorized", { toastId: "notAuthorized" }),
+        0
+      );
+    }
+    navigateTo("/")
+    return null;
+  }
+
+  handleUnauthenticated();
+  return null;
 };
 
 export default ProtectedRoute;
